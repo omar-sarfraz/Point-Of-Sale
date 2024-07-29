@@ -5,23 +5,24 @@ import {
     UnorderedListOutlined,
 } from "@ant-design/icons";
 import { Button } from "antd";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
     return (
         <div className="w-full flex justify-between px-6 py-4 border-emerald-300 border-b-2 mb-10">
-            <div className="flex gap-2 items-center">
+            <Link to="/home" className="flex gap-2 items-center">
                 <ShopOutlined className="text-2xl" />
                 <h2 className="text-2xl font-medium">Point of Sale</h2>
-            </div>
+            </Link>
             <ul className="flex gap-4">
-                <div className="flex gap-2 items-center">
+                <Link to="/home" className="flex gap-2 items-center">
                     <HomeOutlined className="text-xl" />
                     <li className="text-xl font-medium">Home</li>
-                </div>
-                <div className="flex gap-2 items-center">
+                </Link>
+                <Link to="/categories" className="flex gap-2 items-center">
                     <UnorderedListOutlined className="text-xl" />
                     <li className="text-xl font-medium">Categories</li>
-                </div>
+                </Link>
             </ul>
             <ul>
                 <li>
