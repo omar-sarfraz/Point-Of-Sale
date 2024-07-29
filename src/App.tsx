@@ -4,6 +4,7 @@ import Home from "./pages/Home/Home";
 import { ConfigProvider } from "antd";
 import { emerald } from "tailwindcss/colors";
 import NotFound from "./pages/NotFound";
+import Product from "./pages/Product/Product";
 
 const App = () => {
     return (
@@ -12,6 +13,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         <Route path="home" element={<Home />} />
+                        <Route path="products/:id" element={<Product />} />
                         <Route path="*" element={<NotFound />} />
                     </Route>
                 </Routes>
