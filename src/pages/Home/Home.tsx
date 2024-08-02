@@ -39,7 +39,7 @@ export default function Home() {
     return (
         <div>
             <h2 className="text-2xl mb-6 text-center">Our Amazing Products</h2>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
                 {products.map(({ id, title, image, price, description, category }) => (
                     <Link to={`/products/${id}`} key={id}>
                         <Badge.Ribbon text={category}>
