@@ -30,7 +30,7 @@ export default function Product() {
     if (!product) return <div>Loading</div>;
 
     return (
-        <div className="flex w-full justify-center gap-10">
+        <div className="flex w-full justify-center gap-10 mt-24">
             <div className="w-72">
                 <Image src={product.image} className="object-contain" />
             </div>
