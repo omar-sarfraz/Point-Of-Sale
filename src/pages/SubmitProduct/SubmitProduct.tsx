@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, Form, Input, InputNumber, Select, FormProps, notification } from "antd";
 import { BASE_URL } from "../../utils/urls";
 import H2 from "../../components/H2";
+import { useLocation } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -15,7 +16,7 @@ type FieldType = {
 
 type NotificationType = "success" | "info" | "warning" | "error";
 
-const AddProduct = () => {
+const SubmitProduct = () => {
     const [submittable, setSubmittable] = useState<boolean>(false);
     const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
     const [categories, setCategoies] = useState<string[]>();
@@ -23,9 +24,13 @@ const AddProduct = () => {
     const [form] = Form.useForm();
     const values = Form.useWatch([], form);
 
+    const { state } = useLocation();
+
     useEffect(() => {
         fetchCategories();
-    }, []);
+        if (state) form.setFieldsValue(state);
+        else form.resetFields();
+    }, [state]);
 
     const fetchCategories = async () => {
         setLoadingCategories(true);
@@ -51,15 +56,22 @@ const AddProduct = () => {
 
     const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
         try {
-            let response = await fetch(`${BASE_URL}products`, {
-                method: "POST",
+            let url = `${BASE_URL}products`;
+            if (state) url += `/${state.id}`;
+
+            let response = await fetch(url, {
+                method: state ? "PUT" : "POST",
                 body: JSON.stringify(values),
             });
-            if (response.ok)
-                notify("success", "Add a product", "New product has been added successfully!");
+            if (response.ok) {
+                const title = `${state ? "Update" : "Add"} a product`;
+                const description = `Product has been ${state ? "updated" : "added"} successfully!`;
+
+                notify("success", title, description);
+            }
         } catch (e: any) {
             console.log(e);
-            notify("error", "Failed to add product", e?.message);
+            notify("error", `Failed to ${state ? "update" : "add"} product`, e?.message);
         }
     };
 
@@ -74,7 +86,7 @@ const AddProduct = () => {
 
     return (
         <>
-            <H2>Add a Product</H2>
+            <H2>{state ? "Update the" : "Add a"} Product</H2>
             <div className="w-full flex justify-center">
                 {contextHolder}
                 <Form
@@ -147,4 +159,4 @@ const AddProduct = () => {
     );
 };
 
-export default AddProduct;
+export default SubmitProduct;

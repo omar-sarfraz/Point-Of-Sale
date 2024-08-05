@@ -72,7 +72,7 @@ export default function Navbar() {
                         type="primary"
                         size="large"
                         icon={<PlusCircleOutlined />}
-                        onClick={() => navigate("/products/add")}
+                        onClick={() => navigate("/products/submit")}
                     >
                         Add
                     </Button>
