@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { BASE_URL } from "../../utils/urls";
 import ProductsList from "../../components/ProductsList";
+import H2 from "../../components/H2";
 const productsUrl = BASE_URL + "products";
 
 export type ProductType = {
@@ -34,7 +35,7 @@ export default function Home() {
 
     return (
         <div>
-            <h2 className="text-2xl mb-6 text-center">Our Amazing Products</h2>
+            <H2>Our Amazing Products</H2>
             <ProductsList products={products} />
         </div>
     );
