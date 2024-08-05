@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { ProductType } from "../Home/Home";
 import { BASE_URL } from "../../utils/urls";
 
@@ -44,7 +44,9 @@ export default function Product() {
                     <Title level={2}>Price: {product.price} $</Title>
                     <div>
                         <Title level={3}>Category</Title>
-                        <Tag>{product.category}</Tag>
+                        <Link to={`/categories/${product.category}`}>
+                            <Tag>{product.category}</Tag>
+                        </Link>
                     </div>
                 </div>
             </div>
