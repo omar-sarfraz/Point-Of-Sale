@@ -5,13 +5,17 @@ import { BASE_URL } from "../../utils/urls";
 
 import { Typography, Image, Tag, Button } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useNotification } from "../../utils/hooks";
 const { Title, Paragraph } = Typography;
 
 export default function Product() {
     const [product, setProduct] = useState<ProductType | undefined>();
+    const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
 
     const { id } = useParams();
     const navigate = useNavigate();
+
+    const { notify, contextHolder } = useNotification();
 
     useEffect(() => {
         if (!id) return;
@@ -33,12 +37,34 @@ export default function Product() {
         navigate("/products/submit", { state: product });
     };
 
-    const handleDeleteProduct = () => {};
+    const handleDeleteProduct = async () => {
+        setLoadingDelete(true);
+        try {
+            let url = `${BASE_URL}products/${id}`;
+            let response = await fetch(url, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                const title = `Delete a product`;
+                const description = `Product has been deleted successfully!`;
+
+                notify("success", title, description);
+                setTimeout(() => navigate("/home"), 2000);
+            }
+        } catch (e: any) {
+            console.log(e);
+            notify("error", `Failed to delete product`, e?.message);
+        } finally {
+            setLoadingDelete(false);
+        }
+    };
 
     if (!product) return <div>Loading</div>;
 
     return (
         <>
+            {contextHolder}
             <div className="flex w-full justify-center gap-10 mt-24">
                 <div className="w-72">
                     <Image src={product.image} className="object-contain" />
@@ -64,6 +90,7 @@ export default function Product() {
                             shape="circle"
                             icon={<DeleteOutlined />}
                             onClick={handleDeleteProduct}
+                            loading={loadingDelete}
                         />
                         <Button
                             type="primary"

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button, Form, Input, InputNumber, Select, FormProps, notification } from "antd";
+import { Button, Form, Input, InputNumber, Select, FormProps } from "antd";
 import { BASE_URL } from "../../utils/urls";
 import H2 from "../../components/H2";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useNotification } from "../../utils/hooks";
 
 const { Option } = Select;
 
@@ -14,23 +15,32 @@ type FieldType = {
     category?: string;
 };
 
-type NotificationType = "success" | "info" | "warning" | "error";
-
 const SubmitProduct = () => {
     const [submittable, setSubmittable] = useState<boolean>(false);
     const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
     const [categories, setCategoies] = useState<string[]>();
+    const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
     const [form] = Form.useForm();
     const values = Form.useWatch([], form);
 
     const { state } = useLocation();
 
+    const navigate = useNavigate();
+
+    const { notify, contextHolder } = useNotification();
+
     useEffect(() => {
         fetchCategories();
         if (state) form.setFieldsValue(state);
         else form.resetFields();
     }, [state]);
+
+    useEffect(() => {
+        form.validateFields({ validateOnly: true })
+            .then(() => setSubmittable(true))
+            .catch(() => setSubmittable(false));
+    }, [form, values]);
 
     const fetchCategories = async () => {
         setLoadingCategories(true);
@@ -42,19 +52,14 @@ const SubmitProduct = () => {
                 setCategoies(categories);
             }
         } catch (e: any) {
-            console.log(e);
+            console.log("Error fetching categories", e);
         } finally {
             setLoadingCategories(false);
         }
     };
 
-    useEffect(() => {
-        form.validateFields({ validateOnly: true })
-            .then(() => setSubmittable(true))
-            .catch(() => setSubmittable(false));
-    }, [form, values]);
-
     const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+        setLoadingSubmit(true);
         try {
             let url = `${BASE_URL}products`;
             if (state) url += `/${state.id}`;
@@ -68,20 +73,14 @@ const SubmitProduct = () => {
                 const description = `Product has been ${state ? "updated" : "added"} successfully!`;
 
                 notify("success", title, description);
+                setTimeout(() => navigate("/home"), 2000);
             }
         } catch (e: any) {
-            console.log(e);
+            console.log(`Failed to ${state ? "update" : "add"} product`, e);
             notify("error", `Failed to ${state ? "update" : "add"} product`, e?.message);
+        } finally {
+            setLoadingSubmit(false);
         }
-    };
-
-    const [api, contextHolder] = notification.useNotification();
-
-    const notify = (type: NotificationType, message: string, description: string) => {
-        api[type]({
-            message,
-            description,
-        });
     };
 
     return (
@@ -149,7 +148,12 @@ const SubmitProduct = () => {
                     </Form.Item>
 
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Button type="primary" htmlType="submit" disabled={!submittable}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            disabled={!submittable}
+                            loading={loadingSubmit}
+                        >
                             Submit
                         </Button>
                     </Form.Item>
