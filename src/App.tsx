@@ -1,18 +1,13 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
-import Layout from "./Layout";
-import Home from "./pages/Home/Home";
+import { BrowserRouter } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import { emerald } from "tailwindcss/colors";
+import MainNavigation from "./navigators/MainNavigation";
 
 const App = () => {
     return (
         <ConfigProvider theme={{ token: { colorPrimary: emerald[500] } }}>
             <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Layout />}>
-                        <Route path="home" element={<Home />} />
-                    </Route>
-                </Routes>
+                <MainNavigation />
             </BrowserRouter>
         </ConfigProvider>
     );
