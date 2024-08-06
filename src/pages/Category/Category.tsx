@@ -3,6 +3,7 @@ import ProductsList from "../../components/ProductsList";
 import { ProductType } from "../Home/Home";
 import { BASE_URL } from "../../utils/urls";
 import { useParams } from "react-router-dom";
+import H2 from "../../components/H2";
 
 export default function Category() {
     const [categoryProducts, setCategoryProducts] = useState<ProductType[]>();
@@ -28,7 +29,7 @@ export default function Category() {
 
     return (
         <div>
-            <h2 className="text-2xl mb-6 text-center">{category?.toUpperCase()}</h2>
+            <H2>{category?.toUpperCase()}</H2>
             <ProductsList products={categoryProducts} />
         </div>
     );

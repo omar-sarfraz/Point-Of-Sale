@@ -1,16 +1,26 @@
 import { BrowserRouter } from "react-router-dom";
 import { ConfigProvider } from "antd";
-import { emerald } from "tailwindcss/colors";
 import MainNavigation from "./navigators/MainNavigation";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
 const App = () => {
     return (
-        <ConfigProvider theme={{ token: { colorPrimary: emerald[500] } }}>
+        <ThemeProvider>
+            <Router />
+        </ThemeProvider>
+    );
+};
+
+export default App;
+
+const Router = () => {
+    const { primaryColor } = useTheme();
+
+    return (
+        <ConfigProvider theme={{ token: { colorPrimary: primaryColor } }}>
             <BrowserRouter>
                 <MainNavigation />
             </BrowserRouter>
         </ConfigProvider>
     );
 };
-
-export default App;
