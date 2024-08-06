@@ -2,13 +2,21 @@ import { ProductType } from "../pages/Home/Home";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Card, Badge, Input } from "antd";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 const { Meta } = Card;
 const { Search } = Input;
 
 export default function ProductsList({ products }: { products: ProductType[] }) {
     const [filteredProducts, setFilteredProducts] = useState<ProductType[]>(products);
     const [searchTerm, setSearchTerm] = useState<string>("");
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            handleOnSearch();
+        }, 1000);
+
+        return () => clearTimeout(timeout);
+    }, [searchTerm]);
 
     const handleOnSearch = () => {
         const filteredData = products.filter((product) =>
